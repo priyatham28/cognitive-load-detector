@@ -6,8 +6,8 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-from flzk import (
-    FLZKNetwork,
+from cognitive_load_detector import (
+    CognLoadNetwork,
     MockProofSystem,
     SimulationResult,
     SnarkJSConfig,
@@ -15,7 +15,7 @@ from flzk import (
     TrainingConfig,
 )
 
-app = FastAPI(title="FLZK Verifiable Federated Learning Simulator")
+app = FastAPI(title="Cognitive Load Detector — FLZK Simulator")
 
 
 class SimulationRequest(BaseModel):
@@ -61,20 +61,20 @@ class SimulationResponse(BaseModel):
 
 @app.get("/health")
 def health() -> dict[str, str]:
-    return {"status": "ok", "system": "flzk"}
+    return {"status": "ok", "system": "cognitive_load_detector"}
 
 
 def _select_proof_backend(backend: str):
     if backend == "mock":
         return MockProofSystem()
     if backend == "snarkjs":
-        circuit = os.getenv("FLZK_SNARKJS_CIRCUIT")
-        proving_key = os.getenv("FLZK_SNARKJS_PROVING_KEY")
-        verification_key = os.getenv("FLZK_SNARKJS_VERIFICATION_KEY")
+        circuit = os.getenv("CLD_SNARKJS_CIRCUIT")
+        proving_key = os.getenv("CLD_SNARKJS_PROVING_KEY")
+        verification_key = os.getenv("CLD_SNARKJS_VERIFICATION_KEY")
         if not (circuit and proving_key and verification_key):
             raise HTTPException(
                 status_code=400,
-                detail="snarkjs backend requires FLZK_SNARKJS_* environment variables",
+                detail="snarkjs backend requires CLD_SNARKJS_* environment variables",
             )
         config = SnarkJSConfig(
             circuit_path=Path(circuit),
@@ -98,7 +98,7 @@ def simulate(req: SimulationRequest) -> SimulationResponse:
         delta=req.delta,
     )
     proof_system = _select_proof_backend(req.proof_backend)
-    network = FLZKNetwork(
+    network = CognLoadNetwork(
         num_peers=req.num_peers,
         samples_per_peer=req.samples_per_peer,
         num_features=req.num_features,

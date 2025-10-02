@@ -1,66 +1,98 @@
-# FLZK — Verifiable Browser-Based Peer-to-Peer Federated Learning
+# Cognitive Load Detector — FLZK-Inspired Federated Simulation
 
-This repository mirrors the system described in the paper **“FLZK: Verifiable Browser-Based Peer-to-Peer Federated Learning with Zero-Knowledge DP-SGD.”** It provides a reproducible simulation of the protocol, developer tooling, and documentation artefacts that map directly to the sections of the research article.
+![CI](https://github.com/priyatham28/cognitive-load-detector/actions/workflows/ci.yml/badge.svg)
+![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-## Highlights
-- **Decentralised training loop.** `flzk.network.FLZKNetwork` recreates the WebRTC mesh described in Section 4, rotates aggregation duties, and emits structured telemetry for observability.
-- **Pluggable proof systems.** `flzk.proofs` exposes both a deterministic development backend and a `snarkjs` integration point so practitioners can drop in real Groth16 circuits (Section 6).
-- **Differential privacy with auditability.** `flzk.dp_sgd` implements clipped DP-SGD while `flzk.privacy` now uses a Rényi DP accountant mirroring the paper’s privacy analysis (Sections 5 and 9.2).
-- **Browser-friendly stack.** The FastAPI service exposes simulation endpoints that a browser or Streamlit dashboard can consume to emulate the WebAssembly/WebGPU client (Section 7).
+This project packages a recruit-ready implementation of the **FLZK** protocol—browser-friendly
+federated learning with differential privacy and zero-knowledge verification—under a
+`cognitive-load-detector` Python package. It ships with a FastAPI service, Streamlit dashboard,
+unit-tested core logic, and packaging/CI tooling so reviewers can install and run the system with
+minimal friction.
 
-## Quickstart
+## Features
+- **Decentralised training loop** – `cognitive_load_detector.network.CognitiveLoadNetwork`
+  simulates peer rotation, FedAvg aggregation, and telemetry.
+- **Pluggable proof systems** – toggle between a deterministic mock backend or a Groth16
+  `snarkjs` integration for real zero-knowledge proofs.
+- **Differential privacy analytics** – a Rényi DP accountant tracks the privacy budget across
+  rounds.
+- **Production-ready tooling** – `make`, Docker, CI, packaging (`pip install .`), datasheet and
+  model card are all included.
+
+## Installation
 ```bash
-make setup            # create venv and install requirements
-make run              # launch FastAPI service on http://127.0.0.1:8000
-make demo             # open the Streamlit dashboard
-make test             # run unit tests covering DP-SGD, proofs, and the network
+# optional: create a fresh virtual environment
+python -m venv .venv && . .venv/bin/activate
+
+# install the project + dev tooling
+git clone https://github.com/priyatham28/cognitive-load-detector.git
+cd cognitive-load-detector
+pip install -U pip
+pip install -r requirements.txt
 ```
 
-### Invoke the simulator via HTTP
+### Quickstart
 ```bash
-curl -X POST http://127.0.0.1:8000/simulate \
+make run &                     # start the FastAPI service on :8000
+curl -f http://127.0.0.1:8000/health
+curl -s -X POST http://127.0.0.1:8000/simulate \
   -H "content-type: application/json" \
-  -d '{"rounds": 5, "num_peers": 6, "samples_per_peer": 256, "clip_norm": 1.0,
-       "noise_multiplier": 1.1, "learning_rate": 0.1, "batch_size": 32, "num_features": 8,
-       "proof_backend": "mock"}'
+  -d '{"rounds": 2, "num_peers": 4, "samples_per_peer": 128,
+       "clip_norm": 1.0, "noise_multiplier": 1.0,
+       "learning_rate": 0.1, "batch_size": 32,
+       "num_features": 6, "proof_backend": "mock"}' | jq
 ```
-Returns per-round accuracy, loss, privacy budget, and the aggregator that validated each batch of zk proofs.
+Example output snippet:
+```json
+{
+  "history": [
+    {"round_idx": 1, "aggregator_id": "peer-2", "accuracy": 0.55, ...},
+    {"round_idx": 2, "aggregator_id": "peer-1", "accuracy": 0.63, ...}
+  ],
+  "final_accuracy": 0.63,
+  "final_loss": 0.64,
+  "final_epsilon": 0.92
+}
+```
 
-### Using a snarkjs backend
-Provide Groth16 artefacts and set:
+### Developer Workflow
 ```bash
-export FLZK_SNARKJS_CIRCUIT=path/to/circuit.wasm
-export FLZK_SNARKJS_PROVING_KEY=path/to/proving_key.zkey
-export FLZK_SNARKJS_VERIFICATION_KEY=path/to/verification_key.json
+make setup      # create venv + install deps
+make test       # pytest
+make lint       # ruff linting
+make type       # mypy static checks
+make demo       # Streamlit dashboard
+make build      # python -m build (sdist + wheel)
 ```
-Then call the API with `"proof_backend": "snarkjs"`. The service will proxy proof generation and verification to the CLI, aligning with the paper’s production deployment.
 
-## Reference
-The original research paper is included at `docs/final_vector_camera_ready_full.pdf` for convenience.
+### snarkjs Backend
+Provide Groth16 artefacts and export:
+```bash
+export CLD_SNARKJS_CIRCUIT=path/to/circuit.wasm
+export CLD_SNARKJS_PROVING_KEY=path/to/proving_key.zkey
+export CLD_SNARKJS_VERIFICATION_KEY=path/to/verification_key.json
+```
+Then call `/simulate` with `{"proof_backend": "snarkjs"}`. The service proxies proof generation
+and verification to `snarkjs`.
 
-## Repository Map
-- `src/flzk/` — Core protocol components:
-  - `dataset.py`: synthetic data generator matching Section 8 experimental setup.
-  - `dp_sgd.py`: gradient computation, clipping, and noisy updates (Section 5).
-  - `proofs/`: pluggable proof backends (`MockProofSystem`, `SnarkJSProofSystem`).
-  - `peer.py`: browser peer abstraction with key management and local training.
-  - `network.py`: orchestrates peer discovery, rotation, aggregation, and logging (Section 4).
-  - `privacy.py`: Rényi DP accountant mirroring the paper’s analysis.
-- `src/app.py` — FastAPI service exposing `/health` and `/simulate` for automation.
-- `demo/streamlit_app.py` — Browser-style dashboard reflecting Section 7’s developer toolkit.
-- `datasheet.md` & `model_card.md` — Documentation artefacts aligned with the paper’s Datasheet and Model Card appendices.
-- `tests/` — Unit tests covering DP-SGD mechanics, proof verification, and network rollout.
+## Project Layout
+- `src/cognitive_load_detector/` – core package (config, dataset, DP-SGD, proofs, network, API).
+- `examples/quickstart.py` – run a mini-training loop from a script.
+- `demo/streamlit_app.py` – GUI for experimenting with parameters.
+- `tests/` – unit tests covering DP-SGD, proof generation, and network orchestration.
+- `Dockerfile` – container image exposing FastAPI on port 8000.
+- `model_card.md`, `datasheet.md` – documentation referencing the research lineage.
+- `docs/final_vector_camera_ready_full.pdf` – reference paper.
 
-## Reproducing Paper Scenarios
-The simulator approximates the experiments from Section 8:
-1. Choose the number of peers and samples to emulate the CIFAR (image) vs. WISDM (sensor) settings.
-2. Adjust `clip_norm` and `noise_multiplier` to explore the privacy–utility trade-offs from Section 9.2.
-3. Use the Streamlit dashboard or API telemetry to observe zk proof acceptance rates and privacy budget accumulation in real time.
+## Contributing
+1. Fork the repository & create a feature branch.
+2. Install dev dependencies via `pip install -r requirements.txt`.
+3. Run `make lint test type` before pushing.
+4. Open a pull request describing your change and test coverage.
 
-While the mock backend provides fast iteration, the snarkjs integration demonstrates how to connect genuine Groth16 artefacts, keeping the codebase production-ready without compromising testability.
+Please see the [Model Card](model_card.md) and [Datasheet](datasheet.md) for ethical
+and data considerations.
 
-## CI/CD
-GitHub Actions lint, type-check, test, and smoke the API on each push. A Dockerfile is provided to containerise the FastAPI service for deployment or larger-scale simulations.
-
-## Citation
-If you reuse this artefact, please cite the original paper and link back to this repository.
+## License
+Released under the [MIT License](LICENSE).

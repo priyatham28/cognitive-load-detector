@@ -4,12 +4,12 @@ import pandas as pd
 import requests
 import streamlit as st
 
-st.set_page_config(page_title="FLZK Simulator", layout="wide")
-st.title("FLZK: Verifiable Browser-Based Federated Learning")
+st.set_page_config(page_title="Cognitive Load Detector", layout="wide")
+st.title("Cognitive Load Detector — FLZK Simulator")
 
 st.markdown(
     """
-    Run a lightweight simulation of the FLZK protocol as described in the paper.
+    Run a lightweight simulation of the FLZK protocol as described in the research paper.
     Configure the federated setup, select a proof backend, and launch a training run.
     Results include accuracy, loss, and the evolving privacy budget.
     """
@@ -46,8 +46,8 @@ if submitted:
         "seed": int(seed),
         "proof_backend": backend,
     }
-    api_url = os.getenv("FLZK_API", "http://localhost:8000/simulate")
-    with st.spinner("Simulating FLZK rounds..."):
+    api_url = os.getenv("CLD_API", "http://localhost:8000/simulate")
+    with st.spinner("Simulating federated rounds..."):
         resp = requests.post(api_url, json=payload, timeout=120)
     if resp.status_code != 200:
         st.error(f"Simulation failed: {resp.text}")

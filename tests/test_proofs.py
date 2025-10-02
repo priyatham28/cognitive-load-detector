@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import numpy as np
 
-from flzk.config import TrainingConfig
-from flzk.dp_sgd import dp_sgd_step
-from flzk.proofs import MockProofSystem
+from cognitive_load_detector.config import TrainingConfig
+from cognitive_load_detector.dp_sgd import dp_sgd_step
+from cognitive_load_detector.proofs import MockProofSystem
 
 
 def test_proof_roundtrip() -> None:

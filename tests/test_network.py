@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from flzk.config import TrainingConfig
-from flzk.network import FLZKNetwork
-from flzk.proofs import MockProofSystem
+from cognitive_load_detector.config import TrainingConfig
+from cognitive_load_detector.network import CognitiveLoadNetwork
+from cognitive_load_detector.proofs import MockProofSystem
 
 
 def test_network_simulation_runs() -> None:
     config = TrainingConfig(clip_norm=1.0, noise_multiplier=1.0, learning_rate=0.1, batch_size=16)
-    network = FLZKNetwork(
+    network = CognitiveLoadNetwork(
         num_peers=4,
         samples_per_peer=64,
         num_features=4,

@@ -9,11 +9,11 @@ import numpy as np
 from .config import TrainingConfig
 from .dataset import generate_synthetic_dataset
 from .dp_sgd import FloatArray, apply_update, logistic_accuracy, logistic_loss
-from .peer import FLZKPeer
+from .peer import CognitiveLoadPeer
 from .proofs import MockProofSystem, ProofSystem
 from .privacy import approximate_epsilon
 
-LOGGER = logging.getLogger("flzk.network")
+LOGGER = logging.getLogger("cognitive_load_detector.network")
 
 
 @dataclass
@@ -26,7 +26,7 @@ class SimulationResult:
     epsilon: float
 
 
-class FLZKNetwork:
+class CognitiveLoadNetwork:
     """Simulated peer-to-peer training loop."""
 
     def __init__(
@@ -45,7 +45,7 @@ class FLZKNetwork:
         model_dim = num_features + 1  # bias term
         self._global_model: FloatArray = np.zeros(model_dim, dtype=float)
         self._proof_system = proof_system or MockProofSystem()
-        self._peers: list[FLZKPeer] = []
+        self._peers: list[CognitiveLoadPeer] = []
         self._verifying_keys: dict[str, str] = {}
         for peer_idx in range(num_peers):
             dataset = generate_synthetic_dataset(
@@ -56,7 +56,7 @@ class FLZKNetwork:
             key_seed = f"peer-{peer_idx}-{self._rng.integers(0, 2**32)}"
             keypair = self._proof_system.generate_keypair(key_seed)
             peer_rng = np.random.default_rng(self._rng.integers(0, 2**32))
-            peer = FLZKPeer(
+            peer = CognitiveLoadPeer(
                 peer_id=f"peer-{peer_idx}",
                 dataset=dataset,
                 keypair=keypair,
@@ -75,7 +75,7 @@ class FLZKNetwork:
         self._round = 0
 
     @property
-    def peers(self) -> List[FLZKPeer]:
+    def peers(self) -> List[CognitiveLoadPeer]:
         return self._peers
 
     def _broadcast_model(self, model: FloatArray) -> None:

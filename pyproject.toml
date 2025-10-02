@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cognitive-load-detector"
+version = "0.1.0"
+description = "Cognitive load detection simulator built around FLZK-style federated learning with zero-knowledge proofs."
+readme = "README.md"
+authors = [
+  { name = "Priyatham Chowdary" }
+]
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.118",
+  "pydantic>=2.4",
+  "uvicorn[standard]>=0.23",
+  "numpy>=2.0",
+  "pandas>=2.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "mypy>=1.8",
+  "ruff>=0.3",
+  "streamlit>=1.24",
+  "requests>=2.31",
+  "build>=1.2",
+  "httpx>=0.27"
+]
+
+[project.urls]
+Homepage = "https://github.com/priyatham28/cognitive-load-detector"
+Documentation = "https://github.com/priyatham28/cognitive-load-detector#readme"
+Issues = "https://github.com/priyatham28/cognitive-load-detector/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.mypy]
+python_version = "3.12"
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+strict_optional = true
+mypy_path = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

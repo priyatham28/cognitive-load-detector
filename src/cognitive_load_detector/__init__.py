@@ -1,10 +1,10 @@
-"""Core package for the FLZK peer-to-peer DP-SGD simulation."""
+"""Core package for the Cognitive Load Detector federated simulation."""
 
 from .config import Dataset, KeyPair, TrainingConfig
 from .dataset import generate_synthetic_dataset
 from .dp_sgd import DPSGDOutcome, FloatArray, dp_sgd_step
-from .network import FLZKNetwork, SimulationResult
-from .peer import FLZKPeer, LocalUpdate
+from .network import CognitiveLoadNetwork, SimulationResult
+from .peer import CognitiveLoadPeer, LocalUpdate
 from .privacy import approximate_epsilon
 from .proofs import (
     MockProofSystem,
@@ -14,6 +14,9 @@ from .proofs import (
     SnarkJSProofSystem,
 )
 
+# Backwards-compatible alias for earlier module name.
+CognLoadNetwork = CognitiveLoadNetwork
+
 __all__ = [
     "Dataset",
     "KeyPair",
@@ -22,9 +25,10 @@ __all__ = [
     "dp_sgd_step",
     "DPSGDOutcome",
     "FloatArray",
-    "FLZKPeer",
+    "CognitiveLoadPeer",
     "LocalUpdate",
-    "FLZKNetwork",
+    "CognitiveLoadNetwork",
+    "CognLoadNetwork",
     "SimulationResult",
     "approximate_epsilon",
     "Proof",

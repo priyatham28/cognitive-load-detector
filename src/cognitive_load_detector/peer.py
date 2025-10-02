@@ -16,8 +16,8 @@ class LocalUpdate:
     proof: Proof
 
 
-class FLZKPeer:
-    """Represents a single browser peer participating in FLZK."""
+class CognitiveLoadPeer:
+    """Represents a single browser peer participating in the FLZK protocol."""
 
     def __init__(
         self,
