@@ -35,7 +35,7 @@ build:
 security:
 	. .venv/bin/activate; bandit -q -r src
 	. .venv/bin/activate; pip install -U setuptools >/dev/null
-	. .venv/bin/activate; pip-audit --progress-spinner off --skip-editable --ignore-vuln GHSA-4xh5-x5gv-qwph
+	. .venv/bin/activate; pip-audit --progress-spinner off -r requirements-app.txt --ignore-vuln GHSA-4xh5-x5gv-qwph
 
 release-notes:
 	@echo "## Release Notes"
