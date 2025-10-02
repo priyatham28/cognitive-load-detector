@@ -10,16 +10,6 @@ dist/
 
 # Virtual environments
 .venv/
-env/
-venv/
-
-# Data and outputs
-data/
-runs/
-out/
-*.onnx
-*.ckpt
-*.parquet
 
 # OS / Editor
 .DS_Store

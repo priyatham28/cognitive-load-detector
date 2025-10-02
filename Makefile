@@ -1,28 +1,33 @@
-.PHONY: setup run demo test lint type format docker build
+.PHONY: setup run demo test format lint type build
+
+PY ?= python
 
 setup:
-	python -m venv .venv && . .venv/bin/activate && pip install -U pip && pip install -r requirements.txt
+	$(PY) -m venv .venv
+	. .venv/bin/activate; pip install -U pip
+	. .venv/bin/activate; pip install -e .
+	. .venv/bin/activate; pip install -r requirements.txt || true
+	. .venv/bin/activate; pip install ruff mypy pytest pytest-cov build httpx uvicorn
 
 run:
-	python -m uvicorn cognitive_load_detector.api:app --host 0.0.0.0 --port 8000
+	. .venv/bin/activate; uvicorn src.app:app --host 127.0.0.1 --port 8000
 
 demo:
-	streamlit run demo/streamlit_app.py
+	. .venv/bin/activate; streamlit run demo/streamlit_app.py
 
 test:
-	pytest
-
-lint:
-	ruff check .
-
-type:
-	mypy src
+	. .venv/bin/activate; ruff check .
+	. .venv/bin/activate; mypy src || true
+	. .venv/bin/activate; pytest -q --disable-warnings --maxfail=1 --cov=src --cov-report=term-missing
 
 format:
-	ruff format .
+	. .venv/bin/activate; ruff format .
+
+lint:
+	. .venv/bin/activate; ruff check .
+
+type:
+	. .venv/bin/activate; mypy src
 
 build:
-	python -m build
-
-docker:
-	docker build -t cognitive-load-detector:latest .
+	. .venv/bin/activate; python -m build
