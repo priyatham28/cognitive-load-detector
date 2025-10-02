@@ -35,6 +35,9 @@ export FLZK_SNARKJS_VERIFICATION_KEY=path/to/verification_key.json
 ```
 Then call the API with `"proof_backend": "snarkjs"`. The service will proxy proof generation and verification to the CLI, aligning with the paper’s production deployment.
 
+## Reference
+The original research paper is included at `docs/final_vector_camera_ready_full.pdf` for convenience.
+
 ## Repository Map
 - `src/flzk/` — Core protocol components:
   - `dataset.py`: synthetic data generator matching Section 8 experimental setup.
