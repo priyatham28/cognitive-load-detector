@@ -1,4 +1,4 @@
-.PHONY: setup run test lint type format docker
+.PHONY: setup run demo test lint type format docker
 
 setup:
 	python -m venv .venv && . .venv/bin/activate && pip install -U pip && pip install -r requirements.txt
@@ -10,7 +10,7 @@ demo:
 	streamlit run demo/streamlit_app.py
 
 test:
-	pytest -q || true
+	pytest -q
 
 lint:
 	ruff check .
@@ -22,4 +22,4 @@ format:
 	ruff format .
 
 docker:
-	docker build -t app:latest .
+	docker build -t flzk:latest .

@@ -12,9 +12,13 @@ jobs:
       - run: ruff check .
       - run: ruff format --check .
       - run: mypy src
-      - run: pytest -q || true
+      - run: pytest -q
       - name: Smoke API
         run: |
           uvicorn src.app:app --host 0.0.0.0 --port 8000 &
           sleep 3
           curl -f http://127.0.0.1:8000/health
+          curl -s -X POST http://127.0.0.1:8000/simulate \
+            -H 'content-type: application/json' \
+            -d '{"rounds": 2, "num_peers": 3, "samples_per_peer": 64, "batch_size": 16, "num_features": 4}'
+          pkill -f uvicorn
