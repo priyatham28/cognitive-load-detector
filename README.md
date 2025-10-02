@@ -1,32 +1,30 @@
-# FLZK — Verifiable Browser-Based Federated Learning
+# cognitive-load-detector — FLZK-Inspired Federated Learning Demo
 
 ![CI](https://github.com/priyatham28/cognitive-load-detector/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)
 
-A pragmatic, recruiter-ready implementation of the FLZK concept: verifiable
-browser-based federated learning with differential privacy safeguards. The goal
-is to showcase how a senior engineering team would structure a demo-quality
-service—complete with packaging, tests, documentation, and collaboration
-tooling—rather than ship a throwaway prototype.
+**cognitive-load-detector** is the public home of our FLZK simulator: a
+verifiable, browser-friendly federated learning prototype with deterministic
+metrics, an API surface, and collaboration-ready tooling. The repository name
+honours the project’s heritage in cognitive-load research, while the current
+code focuses on the FLZK protocol described in the accompanying paper.
 
 ## Why this matters
-Federated learning solutions are often presented as research artefacts that are
-hard to reproduce. This repository demonstrates how to translate the ideas from
-*FLZK: Verifiable Browser-Based Peer-to-Peer Federated Learning with
-Zero-Knowledge DP-SGD* into a maintainable Python project. Hiring managers can
-see production-minded code, and contributors get a clean slate for experimentation.
+Federated learning prototypes often arrive as academic dumps that are hard to
+reproduce. This repository demonstrates how a senior engineering team would
+package the FLZK ideas—fast iteration tooling, CI, docs, notebooks—so recruiters
+and contributors can evaluate production-minded craft rather than loose scripts.
 
 ## Feature highlights
-- **Deterministic simulator** — Synthesises round-by-round metrics via
-  `flzk.simulation.run_simulation`, keeping demos repeatable.
-- **FastAPI service** — `/health` and `/simulate` endpoints mirror the interface
-  of a production orchestration layer.
-- **Streamlit dashboard** — Non-technical stakeholders can tweak parameters
-  without touching code.
-- **Reproducible tooling** — `pyproject.toml`, pinned dependencies, CI, issue
-  templates, and notebooks make the codebase welcoming to new engineers.
+- **Deterministic simulator** — `flzk.simulation.run_simulation` produces
+  realistic accuracy/loss trajectories for demos and notebooks.
+- **FastAPI service** — `/health` and `/simulate` mirror the interface of a
+  future orchestration layer.
+- **Streamlit dashboard** — Parameter exploration without touching code.
+- **Reproducible tooling** — Pinned dependencies, `pyproject.toml`, CI, issue
+  templates, and notebooks make onboarding painless.
 
 ## Repository layout
 ```mermaid
@@ -53,8 +51,7 @@ source .venv/bin/activate
 pip install -U pip
 pip install -e .[dev]
 ```
-Alternatively run `make setup` to create the virtual environment and install all
-tooling in one step.
+Or run `make setup` to bootstrap everything in one step.
 
 ## Usage
 ### FastAPI service
@@ -85,8 +82,8 @@ Example output:
 ```bash
 make demo
 ```
-The app reads the same FastAPI endpoints and renders the metrics as tables for
-quick iteration during stakeholder reviews.
+The app calls the FastAPI endpoints and renders the metrics so stakeholders can
+experiment without writing code.
 
 ### Docker
 ```bash
@@ -96,15 +93,15 @@ curl -s http://127.0.0.1:8000/health
 ```
 
 ### Notebook
-Browse `notebooks/quickstart.ipynb` for a hands-on walkthrough that imports the
-simulation module, runs a demo, and plots the results inline.
+See `notebooks/quickstart.ipynb` for an interactive walkthrough of the
+simulator and helper utilities.
 
 ## Project structure
 ```
 .
 ├── CHANGES.md
-├── CONTRIBUTING.md
 ├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
 ├── LICENSE
 ├── Makefile
 ├── README.md
@@ -124,7 +121,7 @@ simulation module, runs a demo, and plots the results inline.
     └── test_simulation.py
 ```
 
-## Development
+## Development workflow
 ```bash
 make lint     # ruff
 make type     # mypy
@@ -135,7 +132,7 @@ make build    # python -m build
 ## Contribution guidelines
 We welcome contributions that push the simulator closer to the real FLZK stack.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for branching strategy, testing
-checklist, and review expectations. Serious incidents fall under the
+checklist, and review expectations. Governance is covered in the
 [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## References
