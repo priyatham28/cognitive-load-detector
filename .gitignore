@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Data and outputs
+data/
+runs/
+out/
+*.onnx
+*.ckpt
+*.parquet
+
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
