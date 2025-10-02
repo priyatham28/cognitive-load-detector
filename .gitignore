@@ -11,6 +11,11 @@ dist/
 # Virtual environments
 .venv/
 
+# Test / tooling caches
+.pytest_cache/
+.coverage
+.mypy_cache/
+
 # OS / Editor
 .DS_Store
 .idea/

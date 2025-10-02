@@ -23,7 +23,7 @@ and contributors can evaluate production-minded craft rather than loose scripts.
 - **FastAPI service** — `/health` and `/simulate` mirror the interface of a
   future orchestration layer.
 - **Streamlit dashboard** — Parameter exploration without touching code.
-- **Reproducible tooling** — Pinned dependencies, `pyproject.toml`, CI, issue
+- **Reproducible tooling** — Pinned dependencies, `pyproject.toml`, release automation, CI, issue
   templates, and notebooks make onboarding painless.
 
 ## Repository layout
@@ -127,13 +127,29 @@ make lint     # ruff
 make type     # mypy
 make test     # pytest + coverage
 make build    # python -m build
+make security # bandit + pip-audit
 ```
+Run `pre-commit install` after `make setup` to mirror CI linting locally.
 
 ## Contribution guidelines
 We welcome contributions that push the simulator closer to the real FLZK stack.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for branching strategy, testing
 checklist, and review expectations. Governance is covered in the
 [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## Documentation
+- [Architecture](docs/architecture.md)
+- [ADR 0001](docs/adr/0001-initial-architecture.md)
+- [Roadmap](docs/roadmap.md)
+- [Security Policy](SECURITY.md)
+
+## Release management
+- CI is green-gated via linting, typing, tests, security scans, and smoke tests.
+- Tags matching `v*` trigger `.github/workflows/release.yml`, building wheels/sdists and attaching them to a GitHub Release automatically.
+- Use `make release-notes` to draft the changelog before tagging.
+
+## Security
+Run `make security` locally to execute Bandit and pip-audit. Disclose vulnerabilities via [SECURITY.md](SECURITY.md).
 
 ## References
 - Ramesh et al. *FLZK: Verifiable Browser-Based Peer-to-Peer Federated Learning

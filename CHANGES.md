@@ -13,10 +13,11 @@
   simplified `requirements.txt` to use them.
 - Expanded documentation: professional README, CONTRIBUTING, Code of Conduct,
   issue templates, and a Jupyter notebook walkthrough.
-- Upgraded tests to cover the simulator, package metadata, and API contracts
-  while maintaining 100% coverage.
 - Polished CI, developer tooling, and repository hygiene (.gitignore, badges,
   notebook, TODO markers).
+- Added architecture docs, ADRs, roadmap, and security policy under `docs/`.
+- Hardened automation with security scans (`bandit`, `pip-audit`), release
+  workflow, and release-note generator.
 
 ## Reproduction commands
 - `make setup` — create virtual environment and install deps.
@@ -24,7 +25,10 @@
 - `make demo` — open Streamlit dashboard.
 - `make test` — run lint, type checking, and pytest with coverage.
 - `make build` — produce sdist/wheel artifacts.
+- `make security` — execute Bandit and pip-audit checks.
+- `make release-notes` — generate markdown summary of recent commits.
 
 ## CI
 GitHub Actions workflow: `.github/workflows/ci.yml` (Python 3.10 & 3.11). Includes
-linting, typing, tests, packaging, and API smoke check.
+linting, typing, tests, packaging, security scans, and API smoke check. Tagged
+releases trigger `.github/workflows/release.yml` to attach build artifacts.

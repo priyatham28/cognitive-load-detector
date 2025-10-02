@@ -20,6 +20,8 @@ jobs:
       - run: mypy src || true
       - run: pytest -q --disable-warnings --maxfail=1 --cov=src --cov-report=term-missing
       - run: python -m build
+      - run: bandit -q -r src
+      - run: pip-audit --progress-spinner off --skip-editable --ignore-vuln GHSA-4xh5-x5gv-qwph
       - name: Smoke API
         run: |
           uvicorn src.app:app --host 127.0.0.1 --port 8000 &
